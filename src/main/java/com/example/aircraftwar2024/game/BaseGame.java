@@ -5,6 +5,9 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -58,7 +61,7 @@ public abstract class BaseGame extends SurfaceView implements SurfaceHolder.Call
     private final SurfaceHolder mSurfaceHolder;
     private Canvas canvas;  //绘图的画布
     private final Paint mPaint;
-
+    public static int game_pattern = -1;
     //点击屏幕位置
     float clickX = 0, clickY=0;
 
@@ -68,7 +71,7 @@ public abstract class BaseGame extends SurfaceView implements SurfaceHolder.Call
      * 背景图片缓存，可随难度改变
      */
     protected Bitmap backGround;
-
+    public Handler handlerbasegame = null;
     /**
      * 周期（ms)
      * 控制英雄机射击周期，默认值设为简单模式
@@ -258,7 +261,9 @@ public abstract class BaseGame extends SurfaceView implements SurfaceHolder.Call
         }
         return false;
     }
-
+    public static void setPattern(int t){
+        BaseGame.game_pattern = t;
+    }
 
     private List<AbstractEnemyAircraft> produceEnemy() {
         enemyCounter++;
@@ -417,6 +422,7 @@ public abstract class BaseGame extends SurfaceView implements SurfaceHolder.Call
      * <p>
      * 无效的原因可能是撞击或者飞出边界
      */
+    //TODO：页面跳转
     private void postProcessAction() {
         enemyBullets.removeIf(AbstractFlyingObject::notValid);
         heroBullets.removeIf(AbstractFlyingObject::notValid);
@@ -426,21 +432,9 @@ public abstract class BaseGame extends SurfaceView implements SurfaceHolder.Call
         if (heroAircraft.notValid()) {
             gameOverFlag = true;
             mbLoop = false;
+            //handler
+            handlerbasegame.sendEmptyMessage(-1);
             Log.i(TAG, "heroAircraft is not Valid");
-            String file = "userinfo.txt";
-            String user_name = "test";
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            Date date = new Date();
-            String formattedDate = sdf.format(date);
-            try {
-                FileOutputStream fos = getContext().openFileOutput(file, Context.MODE_PRIVATE);
-                OutputStreamWriter writer = new OutputStreamWriter(fos, "UTF-8");
-                writer.write("-1" + ';' + user_name+ ';' + getScore() + ';' + formattedDate);
-                writer.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
         }
 
     }
@@ -525,13 +519,12 @@ public abstract class BaseGame extends SurfaceView implements SurfaceHolder.Call
     public void surfaceDestroyed(@NonNull SurfaceHolder surfaceHolder) {
         /*TODO*/
         mbLoop = false;
-
     }
 
     @Override
     public void run() {
         /*TODO*/
-        while (mbLoop){
+        while (mbLoop) {
             action();
             draw();
         }

@@ -15,10 +15,24 @@ import com.example.aircraftwar2024.game.BaseGame;
 import com.example.aircraftwar2024.game.EasyGame;
 import com.example.aircraftwar2024.game.HardGame;
 import com.example.aircraftwar2024.game.MediumGame;
+import com.example.myapplication.R;
 
 
 public class GameActivity extends AppCompatActivity {
     private static final String TAG = "GameActivity";
+
+    public Intent intent;
+
+    public Handler mhandler = new Handler(Looper.getMainLooper()) {
+        @Override
+        public void handleMessage(Message msg) {
+            // 处理消息的逻辑
+            if(msg.what == -1){
+                //加载新的UI
+                startActivity(intent);
+            }
+        }
+    };
 
     private int gameType=0;
     public static int screenWidth,screenHeight;
@@ -26,6 +40,7 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         getScreenHW();
 
         if(getIntent() != null){
@@ -35,12 +50,17 @@ public class GameActivity extends AppCompatActivity {
         /*TODO:根据用户选择的难度加载相应的游戏界面*/
         BaseGame baseGameView = null;
         if(gameType == 1){
-            baseGameView = new EasyGame(this);
+            BaseGame.setPattern(1);
+            baseGameView = new EasyGame(this, mhandler);
         } else if (gameType == 2) {
-            baseGameView = new MediumGame(this);
+            BaseGame.setPattern(2);
+            baseGameView = new MediumGame(this, mhandler);
         } else if (gameType == 3) {
-            baseGameView = new HardGame(this);
+            BaseGame.setPattern(3);
+            baseGameView = new HardGame(this, mhandler);
         }
+
+        intent = new Intent(GameActivity.this, Score_rank.class);
         new Thread(baseGameView).start();
         setContentView(baseGameView);
     }
@@ -65,3 +85,4 @@ public class GameActivity extends AppCompatActivity {
         super.onBackPressed();
     }
 }
+

@@ -1,11 +1,14 @@
 package com.example.aircraftwar2024.game;
 
 import android.content.Context;
+import android.os.Handler;
+
 import com.example.aircraftwar2024.ImageManager;
 
 public class MediumGame extends BaseGame{
-    public MediumGame(Context context) {
+    public MediumGame(Context context, Handler p) {
         super(context);
+        handlerbasegame = p;
         this.backGround = ImageManager.BACKGROUND2_IMAGE;
         this.enemyMaxNumber = 3;
         this.heroShootCycle = 9;

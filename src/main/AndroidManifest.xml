@@ -26,6 +26,8 @@
         <activity
             android:name="com.example.aircraftwar2024.activity.OfflineActivity"
             android:exported="true" />
+        <activity android:name="com.example.aircraftwar2024.activity.Score_rank"
+            android:exported="true" />
 
 
     </application>
