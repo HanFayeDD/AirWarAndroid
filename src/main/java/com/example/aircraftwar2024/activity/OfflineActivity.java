@@ -33,12 +33,15 @@ public class OfflineActivity extends AppCompatActivity  implements View.OnClickL
     public void onClick(View view) {
         if(view.getId() == R.id.easy_mode){
             intent.putExtra("level", 1);
+            BaseGame.setPattern(1);
             startActivity(intent);
         }else if(view.getId() == R.id.normal_mode){
             intent.putExtra("level", 2);
+            BaseGame.setPattern(2);
             startActivity(intent);
         } else if (view.getId() == R.id.tough_mode) {
             intent.putExtra("level", 3);
+            BaseGame.setPattern(3);
             startActivity(intent);
         }
     }

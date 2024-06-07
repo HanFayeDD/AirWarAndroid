@@ -55,7 +55,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @author hitsz
  */
 public abstract class BaseGame extends SurfaceView implements SurfaceHolder.Callback, Runnable{
-
     public static final String TAG = "BaseGame";
     boolean mbLoop; //控制绘画线程的标志位
     private final SurfaceHolder mSurfaceHolder;
@@ -432,8 +431,8 @@ public abstract class BaseGame extends SurfaceView implements SurfaceHolder.Call
         if (heroAircraft.notValid()) {
             gameOverFlag = true;
             mbLoop = false;
-            //handler
-            handlerbasegame.sendEmptyMessage(-1);
+//            Looper.prepare();
+            handlerbasegame.sendEmptyMessage(score);
             Log.i(TAG, "heroAircraft is not Valid");
         }
 

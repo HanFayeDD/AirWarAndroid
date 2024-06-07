@@ -7,6 +7,8 @@ import android.os.Looper;
 import android.os.Message;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,22 +19,16 @@ import com.example.aircraftwar2024.game.HardGame;
 import com.example.aircraftwar2024.game.MediumGame;
 import com.example.myapplication.R;
 
+import java.util.HashMap;
+import java.util.Map;
 
-public class GameActivity extends AppCompatActivity {
+
+public class GameActivity extends AppCompatActivity{
     private static final String TAG = "GameActivity";
 
     public Intent intent;
 
-    public Handler mhandler = new Handler(Looper.getMainLooper()) {
-        @Override
-        public void handleMessage(Message msg) {
-            // 处理消息的逻辑
-            if(msg.what == -1){
-                //加载新的UI
-                startActivity(intent);
-            }
-        }
-    };
+    public Handler mhandler;
 
     private int gameType=0;
     public static int screenWidth,screenHeight;
@@ -40,6 +36,15 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        intent = new Intent(this, Score_rank.class);
+        mhandler = new Handler(Looper.getMainLooper()) {
+            @Override
+            public void handleMessage(Message msg) {
+                // 处理消息的逻
+                intent.putExtra("score", msg.what);
+                startActivity(intent);
+            }
+        };
 
         getScreenHW();
 
@@ -59,10 +64,9 @@ public class GameActivity extends AppCompatActivity {
             BaseGame.setPattern(3);
             baseGameView = new HardGame(this, mhandler);
         }
-
-        intent = new Intent(GameActivity.this, Score_rank.class);
         new Thread(baseGameView).start();
         setContentView(baseGameView);
+
     }
 
     public void getScreenHW(){
